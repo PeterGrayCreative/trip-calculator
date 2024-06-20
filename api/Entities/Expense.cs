@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace TripCalculator.Entities;
 
@@ -18,8 +19,9 @@ public class Expense
   public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
   [ForeignKey(nameof(TripId))]
-  public virtual Trip? Trip { get; set; }
+  public Trip? Trip { get; set; }
 
   [ForeignKey(nameof(StudentId))]
-  public virtual Student? Student { get; set; }
+  [JsonIgnore]
+  public Student? Student { get; set; }
 }

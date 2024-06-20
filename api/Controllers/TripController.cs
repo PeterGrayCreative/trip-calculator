@@ -20,10 +20,10 @@ namespace TripCalculator.Controllers
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Trip>>> GetAllTrips()
     {
-      return await _context.Trips.ToListAsync();
+      return await _context.Trips.Include(x => x.Students).Include(x => x.Expenses).ToListAsync();
     }
 
-    [Route("add-trip")]
+    [Route("trip")]
     [HttpPost]
     public async Task<ActionResult<IEnumerable<Trip>>> AddTrip(Guid tripId, [FromQuery] string TripName)
     {
@@ -33,30 +33,55 @@ namespace TripCalculator.Controllers
         Name = TripName
       });
       await _context.SaveChangesAsync();
-      return await _context.Trips.ToListAsync();
+      return await _context.Trips.Include(x => x.Students).Include(x => x.Expenses).ToListAsync();
     }
 
     [Route("{tripId}/expense")]
     [HttpPost]
-    public async Task<ActionResult<Trip?>> AddExpenseToStudent(Guid tripId)
+    public async Task<ActionResult<IEnumerable<Trip>>> AddExpenseToStudent(Guid? tripId, [FromBody] Expense expense)
     {
-      _context.Expenses.Add(new Expense
+      if (tripId == null || expense.Amount == 0 || expense.Name == "") return BadRequest();
+
+      var expenseModel = new Expense
       {
         Id = Guid.NewGuid(),
-        TripId = Guid.NewGuid(),
-        StudentId = Guid.NewGuid(),
-        Name = "anexpense",
-        Amount = 100
-      });
+        TripId = tripId.Value,
+        StudentId = expense.StudentId,
+        Name = expense.Name,
+        Amount = expense.Amount
+      };
+      _context.Expenses.Add(expenseModel);
+
       await _context.SaveChangesAsync();
-      return await _context.Trips.Where(x => x.Id == tripId).FirstOrDefaultAsync();
+
+      return await _context.Trips.Include(x => x.Students).Include(x => x.Expenses).ToListAsync();
     }
 
-    [Route("{tripId}/student")]
+    [Route("student")]
     [HttpPost]
-    public async Task<ActionResult<Trip?>> AddStudentToTrip(Guid tripId)
+    public async Task<ActionResult<IEnumerable<Trip>>> AddStudentToTrip([FromQuery] string? studentName, [FromQuery] Guid? tripId)
     {
-      return await _context.Trips.Where(x => x.Id == tripId).FirstOrDefaultAsync();
+      if (studentName == null) return BadRequest();
+
+      var student = new Student
+      {
+        Id = Guid.NewGuid(),
+        Name = studentName
+      };
+
+      _context.Students.Add(student);
+      await _context.SaveChangesAsync();
+
+      var studentEntity = _context.Students.First(x => x.Id == student.Id);
+      var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
+
+      if (trip != null) studentEntity!.Trips!.Add(trip);
+
+      trip?.Students?.Add(student);
+
+      await _context.SaveChangesAsync();
+
+      return await _context.Trips.Include(x => x.Students).Include(x => x.Expenses).ToListAsync();
     }
   }
 }

@@ -3,7 +3,7 @@ import { TripResponse } from '../types/types';
 
 interface dataTableProps {
   headers: string[];
-  data: TripResponse | undefined;
+  data: [];
   trigger: Function;
 }
 

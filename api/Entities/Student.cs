@@ -14,6 +14,5 @@ public class Student
   public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
   [JsonIgnore]
   public virtual ICollection<Expense>? Expenses { get; set; } = [];
-  [JsonIgnore]
   public virtual ICollection<Trip>? Trips { get; set; } = [];
 }

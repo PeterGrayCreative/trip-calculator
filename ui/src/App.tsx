@@ -3,7 +3,6 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import logo from './logo.svg';
 import { Header } from './Components/Header';
 import { TripTable } from './Components/TripTable';
-import './App.css';
 
 const router = createBrowserRouter([
   {

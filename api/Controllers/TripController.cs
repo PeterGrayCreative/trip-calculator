@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TripCalculator.Entities;
 using TripCalculator.Context;
+using TripCalculator.Models;
+using TripCalculator.Exceptions;
+
 
 namespace TripCalculator.Controllers
 {
@@ -18,22 +21,49 @@ namespace TripCalculator.Controllers
 
     [Route("all-trips")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Trip>>> GetAllTrips()
+    public async Task<ActionResult<IEnumerable<TripDTO?>>> GetAllTrips()
     {
-      return await _context.Trips.Include(x => x.Students).Include(x => x.Expenses).ToListAsync();
+      return await _context.Trips.Include(x => x.Students).Include(x => x.Expenses).Select(x => new TripDTO
+      {
+        Id = x!.Id,
+        Name = x.Name,
+        CreatedOn = x.CreatedOn,
+        TripCost = x.Expenses.Sum(x => x.Amount),
+        StudentCount = x.Students.Count,
+        Expenses = x.Expenses,
+        Students = x.Students
+      }).ToListAsync();
     }
 
     [Route("trip")]
     [HttpPost]
-    public async Task<ActionResult<IEnumerable<Trip>>> AddTrip(Guid tripId, [FromQuery] string TripName)
+    public async Task<ActionResult<TripDTO?>> AddTrip([FromQuery] string TripName)
     {
-      _context.Trips.Add(new Trip
+      Trip? trip;
+      var newTrip = new Trip
       {
         Id = Guid.NewGuid(),
         Name = TripName
-      });
-      await _context.SaveChangesAsync();
-      return await _context.Trips.Include(x => x.Students).Include(x => x.Expenses).ToListAsync();
+      };
+      _context.Trips.Add(newTrip);
+      try
+      {
+        await _context.SaveChangesAsync();
+        trip = await _context.Trips.Include(x => x.Students).Include(x => x.Expenses).FirstOrDefaultAsync(x => x.Id == newTrip.Id);
+      }
+      catch (Exception e)
+      {
+        throw new DBSaveException("Unable to save entity", e.InnerException);
+      }
+
+      return new TripDTO
+      {
+        Id = trip!.Id,
+        Name = trip.Name,
+        CreatedOn = trip.CreatedOn.ToLocalTime(),
+        TripCost = trip.Expenses.Sum(x => x.Amount),
+        StudentCount = trip.Students.Count
+      };
     }
 
     [Route("{tripId}/expense")]
@@ -51,17 +81,24 @@ namespace TripCalculator.Controllers
         Amount = expense.Amount
       };
       _context.Expenses.Add(expenseModel);
+      try
+      {
+        await _context.SaveChangesAsync();
+      }
+      catch (Exception e)
+      {
+        throw new DBSaveException("Unable to save entity", e.InnerException);
+      }
 
-      await _context.SaveChangesAsync();
-
-      return await _context.Trips.Include(x => x.Students).Include(x => x.Expenses).ToListAsync();
+      return Ok();
     }
 
     [Route("student")]
     [HttpPost]
-    public async Task<ActionResult<IEnumerable<Trip>>> AddStudentToTrip([FromQuery] string? studentName, [FromQuery] Guid? tripId)
+    public async Task<ActionResult<StudentDTO?>> AddStudentToTrip([FromQuery] string? studentName, [FromQuery] Guid? tripId)
     {
       if (studentName == null) return BadRequest();
+      Student? studentEntity;
 
       var student = new Student
       {
@@ -70,18 +107,37 @@ namespace TripCalculator.Controllers
       };
 
       _context.Students.Add(student);
-      await _context.SaveChangesAsync();
+      try
+      {
+        await _context.SaveChangesAsync();
 
-      var studentEntity = _context.Students.First(x => x.Id == student.Id);
-      var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
+        studentEntity = await _context.Students.FirstOrDefaultAsync(x => x.Id == student.Id);
+        if (studentEntity == null) throw new Exception("Student Entity was not able to save");
 
-      if (trip != null) studentEntity!.Trips!.Add(trip);
+        var trip = await _context.Trips.FirstOrDefaultAsync(x => x.Id == tripId);
 
-      trip?.Students?.Add(student);
+        if (trip != null) studentEntity!.Trips!.Add(trip);
 
-      await _context.SaveChangesAsync();
+        trip?.Students?.Add(student);
 
-      return await _context.Trips.Include(x => x.Students).Include(x => x.Expenses).ToListAsync();
+        await _context.SaveChangesAsync();
+      }
+      catch (Exception e)
+      {
+        throw new DBSaveException("Unable to save entity", e.InnerException);
+      }
+
+      return new StudentDTO
+      {
+        Name = studentEntity.Name,
+        Id = studentEntity.Id,
+        Trips = studentEntity!.Trips!.Select(x => new TripDTO
+        {
+          Id = x.Id,
+          Name = x.Name,
+          CreatedOn = x.CreatedOn
+        }).ToList(),
+      };
     }
   }
 }

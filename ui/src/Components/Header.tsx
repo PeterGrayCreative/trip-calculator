@@ -12,8 +12,8 @@ export const Header = () => {
         <Link to="students">
           <button className="btn">Students</button>
         </Link>
-        <Link to="add-student">
-          <button className="btn">Add a Student</button>
+        <Link to="add-trip">
+          <button className="btn">Add Trip</button>
         </Link>
       </div>
     </>

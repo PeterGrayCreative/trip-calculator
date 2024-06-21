@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 
 export const Modal = ({ showModal, setShowModal, id }: any) => {
   useEffect(() => {
-    console.log(id);
-  }, [setShowModal, id]);
+    console.log(id, showModal);
+  }, [showModal, id]);
 
   return (
     <>

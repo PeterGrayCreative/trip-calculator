@@ -4,14 +4,14 @@ import { TripResponse } from '../types/types';
 interface dataTableProps {
   headers: string[];
   data: TripResponse | undefined;
-  onClick: Function;
+  trigger: Function;
 }
 
-export const DataTable = ({ headers, data, onClick }: dataTableProps) => {
+export const DataTable = ({ headers, data, trigger }: dataTableProps) => {
   const rowRenderer = () =>
     data?.map((x: any) => {
       return (
-        <tr key={x.id} onClick={() => onClick(x.id)}>
+        <tr key={x.id} onClick={() => trigger(x.id)}>
           {Object.keys(x).map((y: string) => {
             if (y === 'id') return null;
             return <td>{x[y]}</td>;

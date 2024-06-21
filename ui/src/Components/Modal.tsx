@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 // Borrowed from https://www.creative-tim.com/learning-lab/tailwind-starter-kit/documentation/react/modals/regular
 
-export const Modal = (showModal: bool, ) => {
+export const Modal = ({ showModal, setShowModal, id }: any) => {
+  useEffect(() => {
+    console.log(id);
+  }, [setShowModal, id]);
+
   return (
     <>
       {showModal ? (

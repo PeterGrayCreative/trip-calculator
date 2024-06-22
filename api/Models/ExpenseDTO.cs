@@ -7,6 +7,5 @@ public class ExpenseDTO
   public Guid StudentId { get; set; }
   public string Name { get; set; } = "";
   public int Amount { get; set; }
-
   public DateTime CreatedOn { get; set; }
 }

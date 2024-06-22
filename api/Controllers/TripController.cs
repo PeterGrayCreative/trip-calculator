@@ -29,10 +29,42 @@ namespace TripCalculator.Controllers
         Name = x.Name,
         CreatedOn = x.CreatedOn,
         TripCost = x.Expenses.Sum(x => x.Amount),
-        StudentCount = x.Students.Count,
-        Expenses = x.Expenses,
-        Students = x.Students
+        StudentCount = x.Students.Count
       }).ToListAsync();
+    }
+
+    [Route("trip/{tripId}")]
+    [HttpGet]
+    public async Task<ActionResult<TripDTO?>> GetTripById(Guid tripId)
+    {
+      return await _context.Trips
+        .Where(x => x.Id == tripId)
+        .Include(x => x.Students)
+        .ThenInclude(x => x.Expenses)
+        .Include(x => x.Expenses)
+        .Select(x => new TripDTO
+        {
+          Id = x!.Id,
+          Name = x.Name,
+          CreatedOn = x.CreatedOn,
+          TripCost = x.Expenses.Sum(x => x.Amount),
+          StudentCount = x.Students.Count,
+          Expenses = x.Expenses.Select(y => new ExpenseDTO
+          {
+            Name = y.Name,
+            Id = y.Id,
+            TripId = y.TripId,
+            Amount = y.Amount,
+            CreatedOn = y.CreatedOn,
+            StudentId = y.StudentId
+          }),
+          Students = x.Students.Select(y => new StudentDTO
+          {
+            Name = y.Name,
+            Id = y.Id,
+            ExpenseTotal = y.Expenses!.Count > 0 ? y.Expenses.Sum(x => x.Amount) : 0
+          })
+        }).FirstOrDefaultAsync();
     }
 
     [Route("trip")]
@@ -66,11 +98,11 @@ namespace TripCalculator.Controllers
       };
     }
 
-    [Route("{tripId}/expense")]
+    [Route("trip/{tripId}/expense")]
     [HttpPost]
     public async Task<ActionResult<IEnumerable<Trip>>> AddExpenseToStudent(Guid? tripId, [FromBody] Expense expense)
     {
-      if (tripId == null || expense.Amount == 0 || expense.Name == "") return BadRequest();
+      if (tripId == null || expense.Amount == 0 || expense.Name == "" || expense.StudentId == Guid.Empty) return BadRequest();
 
       var expenseModel = new Expense
       {
@@ -131,11 +163,20 @@ namespace TripCalculator.Controllers
       {
         Name = studentEntity.Name,
         Id = studentEntity.Id,
+        Expenses = studentEntity!.Expenses!.Select(x => new ExpenseDTO
+        {
+          Name = x.Name,
+          Id = x.Id,
+          TripId = x.TripId,
+          Amount = x.Amount,
+          CreatedOn = x.CreatedOn
+        }),
         Trips = studentEntity!.Trips!.Select(x => new TripDTO
         {
           Id = x.Id,
           Name = x.Name,
-          CreatedOn = x.CreatedOn
+          CreatedOn = x.CreatedOn,
+
         }).ToList(),
       };
     }

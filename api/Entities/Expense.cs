@@ -12,7 +12,7 @@ public class Expense
   [Required]
   public Guid TripId { get; set; }
   [Required]
-  public Guid StudentId { get; set; }
+  public Guid StudentId { get; set; } = Guid.Empty;
   public string Name { get; set; } = "";
   public int Amount { get; set; }
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { TripResponse } from '../types/types';
 
 interface dataTableProps {
   headers: string[];
@@ -23,12 +22,11 @@ export const DataTable = ({ headers, data, trigger }: dataTableProps) => {
         </tr>
       );
     });
-
   return (
     <div className="overflow-x-auto">
       <table className="table">
         <thead>
-          <tr>
+          <tr key="header">
             {headers.map((x) => {
               return <th key={x}>{x}</th>;
             })}

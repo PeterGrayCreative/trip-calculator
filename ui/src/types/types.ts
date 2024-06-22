@@ -1,10 +1,18 @@
-interface Trip {
+export interface Trip {
   id: string
   name: string
   createdOn: Date
   tripCost: number
   studentCount: number
-  students: []
-  expenses: []
+  students: object[]
+  expenses: object[]
 }
-export type TripResponse = Trip[]
+
+interface BasicTrip {
+  id: string
+  name: string
+  createdOn: Date
+  tripCost: number
+  studentCount: number
+}
+export type BasicTripResponse = BasicTrip[];

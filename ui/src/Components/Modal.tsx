@@ -18,9 +18,9 @@ export const Modal = ({
   return (
     <>
       <dialog ref={modalRef} id="trip_modal" className="modal">
-        <div className="modal-box">
+        <div className="modal-box max-w-3xl">
           <h3 className="font-bold text-lg">{modalTitle}</h3>
-          <div className="w-3/5 min-w-min">{children}</div>
+          <div className="w-full min-w-min">{children}</div>
           <div className="modal-action">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}

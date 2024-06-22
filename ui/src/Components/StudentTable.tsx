@@ -31,7 +31,7 @@ export const StudentTable = ({ trip }: any) => {
         }
 
         const allEqual = studentsOwedAShare.every(
-          (x: any) => studentsOwedAShare[0].amount === x.amount
+          (x: any) => studentsOwedAShare[0].expenseTotal === x.expenseTotal
         );
         const equalSplit = shareOwed / studentsOwedAShare.length;
 
@@ -40,7 +40,8 @@ export const StudentTable = ({ trip }: any) => {
               <li>{`${x.name} - $${equalSplit.toFixed(2)}`}</li>
             ))
           : studentsOwedAShare.map((x: any) => {
-              return <li>{`${x.name} - $${shareOwed.toFixed(2)}`}</li>;
+              const owedToStudent = shareOwed - (x.expenseTotal - share);
+              return <li>{`${x.name} - $${owedToStudent.toFixed(2)}`}</li>;
             });
       };
       return {

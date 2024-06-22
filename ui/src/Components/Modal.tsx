@@ -6,6 +6,7 @@ export const Modal = ({
   setShowModal,
   id,
   modalTitle,
+  secondaryHeaderText,
   children,
 }: any) => {
   const modalRef = useRef<HTMLDialogElement>(null);
@@ -19,7 +20,10 @@ export const Modal = ({
     <>
       <dialog ref={modalRef} id="trip_modal" className="modal">
         <div className="modal-box max-w-3xl">
-          <h3 className="font-bold text-lg">{modalTitle}</h3>
+          <div className="flex flex-row justify-between">
+            <h3 className="font-bold text-lg mb-3">{modalTitle}</h3>
+            <span>{secondaryHeaderText}</span>
+          </div>
           <div className="w-full min-w-min">{children}</div>
           <div className="modal-action">
             <form method="dialog">

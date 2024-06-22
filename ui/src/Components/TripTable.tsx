@@ -35,7 +35,14 @@ export const TripTable = () => {
     <>
       <DataTable
         headers={headers}
-        data={allTrips as []}
+        data={
+          allTrips?.map((x) => {
+            return {
+              ...x,
+              tripCost: `$${x.tripCost}`,
+            };
+          }) as []
+        }
         trigger={handleClick}
       />
       <Modal
@@ -43,6 +50,12 @@ export const TripTable = () => {
         setShowModal={setShowModal}
         id={tripId}
         modalTitle={selectedTrip?.name}
+        secondaryHeaderText={
+          <>
+            <p>Trip Total</p>
+            <p>{`$${selectedTrip?.tripCost}`}</p>
+          </>
+        }
       >
         <StudentTable trip={selectedTrip} />
       </Modal>

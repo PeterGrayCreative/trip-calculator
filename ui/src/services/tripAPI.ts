@@ -5,6 +5,7 @@ import { BasicTripResponse, Trip } from '../types/types';
 export const tripCalculatorAPI = createApi({
   reducerPath: 'tripCalculatorAPI',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5036/api/' }),
+  tagTypes: ['trip'],
   endpoints: (builder) => ({
     getAllTrips: builder.query<BasicTripResponse, void>({
       query: () => 'all-trips',
@@ -13,6 +14,7 @@ export const tripCalculatorAPI = createApi({
       query: (string) => `trip/${string}`,
     }),
     addTrip: builder.mutation({
+      invalidatesTags: ['trip'],
       query: (name) => ({
         url: `trip?TripName=${name}`,
         method: 'POST',

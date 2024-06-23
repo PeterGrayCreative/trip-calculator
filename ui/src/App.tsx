@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import logo from './logo.svg';
 import { Header } from './Components/Header';
 import { TripTable } from './Components/TripTable';
+import { AddTripForm } from './Components/AddTripForm';
 
 const router = createBrowserRouter([
   {
@@ -18,8 +19,8 @@ const router = createBrowserRouter([
         element: <TripTable />,
       },
       {
-        path: ':tripId',
-        element: <>'view trip detail'</>,
+        path: 'add-trip',
+        element: <AddTripForm />,
       },
       {
         path: 'students',

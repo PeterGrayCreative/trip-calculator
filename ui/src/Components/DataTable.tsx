@@ -26,11 +26,13 @@ export const DataTable = ({ headers, data, trigger }: dataTableProps) => {
     <div className="overflow-x-auto">
       <table className="table">
         <thead>
-          <tr key="header">
-            {headers.map((x) => {
-              return <th key={x}>{x}</th>;
-            })}
-          </tr>
+          {
+            <tr key="header">
+              {headers.map((x) => {
+                return <th key={x}>{x}</th>;
+              })}
+            </tr>
+          }
         </thead>
         <tbody>{rowRenderer()}</tbody>
       </table>

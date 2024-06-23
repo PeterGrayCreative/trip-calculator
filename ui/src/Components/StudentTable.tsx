@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import sum from 'lodash/sum';
 import isNil from 'lodash/isNil';
 import { DataTable } from './DataTable';
-import { useGetTripByIdQuery } from '../services/tripAPI';
+import {
+  useGetTripByIdQuery,
+  useLazyGetTripByIdQuery,
+} from '../services/tripAPI';
 import { Trip } from '../types/types';
 
 export const StudentTable = ({ trip, addExpenseToStudent }: any) => {
@@ -21,13 +24,6 @@ export const StudentTable = ({ trip, addExpenseToStudent }: any) => {
         student.expenseTotal > share ? 0 : share - student.expenseTotal;
       const getStudentOwedTo = () => {
         if (student.expenseTotal > share) return '';
-        if (studentsOwedAShare.length === 1) {
-          return (
-            <li>
-              `${studentsOwedAShare[0].name} - $${shareOwed}`
-            </li>
-          );
-        }
 
         const totalOwed = sum(
           studentsOwedAShare.map((x: any) => x.expenseTotal - share)
@@ -55,10 +51,7 @@ export const StudentTable = ({ trip, addExpenseToStudent }: any) => {
         shareOwed: `$${shareOwed.toFixed(2)}`,
         owedTo: <ul>{getStudentOwedTo()}</ul>,
         addExpense: (
-          <button
-            className="btn"
-            onClick={() => addExpenseToStudent(student.id)}
-          >
+          <button className="btn" onClick={() => addExpenseToStudent(student)}>
             Add Expense
           </button>
         ),
@@ -78,7 +71,7 @@ export const StudentTable = ({ trip, addExpenseToStudent }: any) => {
         />
       ) : (
         <div className="text-center py-15">
-          'Add a student to start calculating this trip.'
+          Add a student to start calculating this trip.
         </div>
       )}
     </>

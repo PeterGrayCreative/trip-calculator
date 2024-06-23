@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { useAddTripMutation } from '../services/tripAPI';
+import { useAddTripMutation } from '../../services/tripAPI';
 import { get, isNil } from 'lodash';
 import { useNavigate } from 'react-router-dom';
 
-export const AddTripForm = ({ showModal, setShowModal }: any) => {
+export const AddTripForm = () => {
   const navigate = useNavigate();
   const [hasError, setHasError] = useState(false);
   const [addTrip, result] = useAddTripMutation();
@@ -14,7 +14,7 @@ export const AddTripForm = ({ showModal, setShowModal }: any) => {
     const nameValue = get(e, 'target[0].value', null);
     if (isNil(nameValue)) return;
     try {
-      const payload = await addTrip(nameValue).unwrap();
+      await addTrip(nameValue).unwrap();
       setHasError(false);
       formRef.current?.reset();
       return navigate('/');

@@ -1,15 +1,10 @@
-import React, { useState, useRef } from 'react';
-import {
-  useAddStudentMutation,
-  useLazyGetTripByIdQuery,
-} from '../../services/tripAPI';
+import { useState, useRef } from 'react';
+import { useAddStudentMutation } from '../../services/tripAPI';
 import { get, isNil } from 'lodash';
-import { useNavigate } from 'react-router-dom';
 
 export const AddStudentForm = ({ tripId, onSaveAction }: any) => {
   const [hasError, setHasError] = useState(false);
   const [addStudent] = useAddStudentMutation();
-  const [getTripById] = useLazyGetTripByIdQuery();
   // use a form ref to reset the form manually on form submission
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -26,8 +21,6 @@ export const AddStudentForm = ({ tripId, onSaveAction }: any) => {
       await addStudent(`studentName=${nameValue}&tripId=${tripId}`).unwrap();
       setHasError(false);
       formRef.current?.reset();
-      // calls the endpoint again to refresh the student list
-      await getTripById(tripId);
       return onSaveAction();
     } catch (error) {
       setHasError(true);

@@ -1,14 +1,13 @@
-import React, { useEffect, useRef } from 'react';
-// Borrowed from https://www.creative-tim.com/learning-lab/tailwind-starter-kit/documentation/react/modals/regular
+import { useEffect, useRef } from 'react';
 
 export const Modal = ({
   showModal,
   setShowModal,
-  id,
   modalTitle,
   secondaryHeaderText,
   children,
 }: any) => {
+  // using a ref gives us access to the actual form element to call the close() function on dialogues
   const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -17,24 +16,21 @@ export const Modal = ({
   }, [showModal]);
 
   return (
-    <>
-      <dialog ref={modalRef} id="trip_modal" className="modal">
-        <div className="modal-box max-w-3xl">
-          <div className="flex flex-row justify-between">
-            <h3 className="font-bold text-lg mb-3">{modalTitle}</h3>
-            <span>{secondaryHeaderText}</span>
-          </div>
-          <div className="w-full min-w-min">{children}</div>
-          <div className="modal-action">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button className="btn" onClick={() => setShowModal(false)}>
-                Close
-              </button>
-            </form>
-          </div>
+    <dialog ref={modalRef} id="trip_modal" className="modal">
+      <div className="modal-box max-w-3xl">
+        <div className="flex flex-row justify-between">
+          <h3 className="font-bold text-lg mb-3">{modalTitle}</h3>
+          <span>{secondaryHeaderText}</span>
         </div>
-      </dialog>
-    </>
+        <div className="w-full min-w-min">{children}</div>
+        <div className="modal-action">
+          <form method="dialog">
+            <button className="btn" onClick={() => setShowModal(false)}>
+              Close
+            </button>
+          </form>
+        </div>
+      </div>
+    </dialog>
   );
 };

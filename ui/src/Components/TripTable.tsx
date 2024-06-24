@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import isNil from 'lodash/isNil';
 import { DataTable } from './DataTable';
 import { useGetAllTripsQuery, useGetTripByIdQuery } from '../services/tripAPI';

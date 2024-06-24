@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
 import sum from 'lodash/sum';
 import isNil from 'lodash/isNil';
 import { DataTable } from './DataTable';
-import {
-  useGetTripByIdQuery,
-  useLazyGetTripByIdQuery,
-} from '../services/tripAPI';
+import { useGetTripByIdQuery } from '../services/tripAPI';
 import { Trip } from '../types/types';
 
 export const StudentTable = ({ trip, addExpenseToStudent }: any) => {
@@ -14,37 +10,31 @@ export const StudentTable = ({ trip, addExpenseToStudent }: any) => {
 
   const processStudentsWithExpenses = (trip: Trip | null | undefined) => {
     if (isNil(trip)) return;
-    const share = trip?.tripCost / trip?.studentCount;
-    const studentsOwedAShare: any = trip?.students?.filter((student: any) => {
+    const share = trip.tripCost / trip.studentCount;
+    const studentsOwedAShare: any = trip.students?.filter((student: any) => {
       return student.expenseTotal > share;
     });
 
-    return trip?.students?.map((student: any) => {
+    return trip.students?.map((student: any) => {
       const shareOwed =
         student.expenseTotal > share ? 0 : share - student.expenseTotal;
+
       const getStudentOwedTo = () => {
         if (student.expenseTotal > share) return '';
 
         const totalOwed = sum(
           studentsOwedAShare.map((x: any) => x.expenseTotal - share)
         );
-        const allEqual = studentsOwedAShare.every(
-          (x: any) => studentsOwedAShare[0].expenseTotal === x.expenseTotal
-        );
-        const equalSplit = shareOwed / studentsOwedAShare.length;
 
-        return allEqual
-          ? studentsOwedAShare.map((x: any) => (
-              <li key={x.id}>{`${x.name} - $${equalSplit.toFixed(2)}`}</li>
-            ))
-          : studentsOwedAShare.map((x: any) => {
-              const percentageOwed = (x.expenseTotal - share) / totalOwed;
-              const owedToStudent = shareOwed * percentageOwed;
-              return (
-                <li key={x.id}>{`${x.name} - $${owedToStudent.toFixed(2)}`}</li>
-              );
-            });
+        return studentsOwedAShare.map((x: any) => {
+          const percentageOwed = (x.expenseTotal - share) / totalOwed;
+          const owedToStudent = shareOwed * percentageOwed;
+          return (
+            <li key={x.id}>{`${x.name} - $${owedToStudent.toFixed(2)}`}</li>
+          );
+        });
       };
+
       return {
         name: student.name,
         expenses: `$${student.expenseTotal}`,

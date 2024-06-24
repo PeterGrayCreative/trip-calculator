@@ -159,26 +159,7 @@ namespace TripCalculator.Controllers
         throw new DBSaveException("Unable to save entity", e.InnerException);
       }
 
-      return new StudentDTO
-      {
-        Name = studentEntity.Name,
-        Id = studentEntity.Id,
-        Expenses = studentEntity!.Expenses!.Select(x => new ExpenseDTO
-        {
-          Name = x.Name,
-          Id = x.Id,
-          TripId = x.TripId,
-          Amount = x.Amount,
-          CreatedOn = x.CreatedOn
-        }),
-        Trips = studentEntity!.Trips!.Select(x => new TripDTO
-        {
-          Id = x.Id,
-          Name = x.Name,
-          CreatedOn = x.CreatedOn,
-
-        }).ToList(),
-      };
+      return Ok();
     }
   }
 }

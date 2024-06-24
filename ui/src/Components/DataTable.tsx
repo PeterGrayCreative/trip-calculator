@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface dataTableProps {
   headers: string[];
   data: [];
@@ -27,6 +25,7 @@ export const DataTable = ({ headers, data, trigger }: dataTableProps) => {
       <table className="table">
         <thead>
           {
+            // Had to enclose in brackets as react was throwing a warning about keys
             <tr key="header">
               {headers.map((x) => {
                 return <th key={x}>{x}</th>;

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useAddTripMutation } from '../../services/tripAPI';
 import { get, isNil } from 'lodash';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 export const AddTripForm = () => {
   const navigate = useNavigate();
   const [hasError, setHasError] = useState(false);
-  const [addTrip, result] = useAddTripMutation();
+  const [addTrip] = useAddTripMutation();
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = async (e: FormDataEvent) => {

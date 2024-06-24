@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TripCalculator.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

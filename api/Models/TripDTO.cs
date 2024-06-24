@@ -1,5 +1,3 @@
-using TripCalculator.Entities;
-
 namespace TripCalculator.Models;
 
 public class TripDTO

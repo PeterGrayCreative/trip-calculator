@@ -10,14 +10,9 @@ namespace TripCalculator.Controllers
 {
   [Route("api")]
   [ApiController]
-  public class TripController : ControllerBase
+  public class TripController(TripCalculatorContext context) : ControllerBase
   {
-    private readonly TripCalculatorContext _context;
-
-    public TripController(TripCalculatorContext context)
-    {
-      _context = context;
-    }
+    private readonly TripCalculatorContext _context = context;
 
     [Route("all-trips")]
     [HttpGet]

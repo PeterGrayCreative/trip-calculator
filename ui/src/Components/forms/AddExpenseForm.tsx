@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 export const AddExpenseForm = ({ tripId, student, onSaveAction }: any) => {
   const [hasError, setHasError] = useState(false);
   const [addExpense] = useAddExpenseMutation();
-  const [trigger] = useLazyGetTripByIdQuery();
+  const [getTripById] = useLazyGetTripByIdQuery();
   // use a form ref to reset the form manually on form submission
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -33,7 +33,7 @@ export const AddExpenseForm = ({ tripId, student, onSaveAction }: any) => {
       setHasError(false);
       formRef.current?.reset();
       // calls the endpoint again to refresh the student list
-      await trigger(tripId);
+      await getTripById(tripId);
       return onSaveAction();
     } catch (error) {
       setHasError(true);

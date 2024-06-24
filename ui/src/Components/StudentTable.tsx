@@ -59,15 +59,12 @@ export const StudentTable = ({ trip, addExpenseToStudent }: any) => {
     });
   };
 
-  const handleClick = (id: string) => {};
-
   return (
     <>
       {trip?.studentCount > 0 ? (
         <DataTable
           headers={headers}
           data={processStudentsWithExpenses(selectedTrip) as []}
-          trigger={handleClick}
         />
       ) : (
         <div className="text-center py-15">

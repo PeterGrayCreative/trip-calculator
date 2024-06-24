@@ -3,7 +3,7 @@ import React from 'react';
 interface dataTableProps {
   headers: string[];
   data: [];
-  trigger: Function;
+  trigger?: Function;
 }
 
 export const DataTable = ({ headers, data, trigger }: dataTableProps) => {
@@ -12,7 +12,7 @@ export const DataTable = ({ headers, data, trigger }: dataTableProps) => {
       return (
         <tr
           key={x.id}
-          onClick={() => trigger(x.id)}
+          onClick={() => trigger && trigger(x.id)}
           className="hover cursor-pointer"
         >
           {Object.keys(x).map((y: string) => {
